@@ -1,6 +1,6 @@
-// Velocidad de los Motores de Manera Independiente | Independent Motor Speed 
+// Velocidad de los Motores de Manera Independiente mediante la PC | Speed of the Motors Independently by the PC
 
-// librerias | Libraries
+// Librerias | Libraries
 #include <16f877A.h>
 #fuses XT, NOWDT, NOLVP, NOPROTECT
 #use delay(clock = 4000000)
@@ -11,10 +11,10 @@
 char characters[2];
 char option, speedRead, c = '%';
 int percentage1, percentage2, speedInt;
-int16 speedMotor1, speedMotor2;
+int16 engineSpeed1, engineSpeed2;
 
 // Funcion para imprimir en la pantalla | Function to print on the screen
-void imprimir()
+void printText()
 {
     printf("\f.: Control de Velocidad de 2 Motores de CD Mediante La PC :.\n\n\r");
     printf("     .: Ingrese la Velocidad Deseada para Cada Motor :.\n\n\r");
@@ -26,9 +26,9 @@ void imprimir()
     printf(":: Ingrese el comando: ");
 }
 
-// Funcion de Interrupcion para recibir datos | Interrupt function to receive data
+// Funcion de Interrupcion por Recepcion de Datos | Data Reception Interrupt Function
 #int_rda
-void motor()
+void RS232Communication()
 {
     // Recibe los datos | Receive the data
     gets(characters);
@@ -40,17 +40,17 @@ void motor()
     if (option == '1')
     {
         percentage1 = speedInt * 10;
-        speedMotor1 = speedInt * 10;
+        engineSpeed1 = speedInt * 10;
     }
     // Opcciones para el motor 2 | Options for motor 2
     else if (option == '2')
     {
         percentage2 = speedInt * 10;
-        speedMotor2 = speedInt * 10;
+        engineSpeed2 = speedInt * 10;
     }
 
     // Imprimir en la pantalla | print on the screen
-    imprimir();
+    printText();
 }
 
 // Funcion principal | Main function
@@ -62,22 +62,22 @@ void main()
     // Inicializacion de la Pantalla LCD | LCD Screen Initialization
     lcd_init();
     // Imprimir en la pantalla | print on the screen
-    imprimir();
+    printText();
 
     // Ciclo infinito | Infinite cycle
     while (true)
     {
         // Motor 1 | Motor 1
         output_high(PIN_B1);
-        delay_ms(speedMotor1);
+        delay_ms(engineSpeed1);
         output_low(PIN_B1);
-        delay_ms(100 - speedMotor1);
+        delay_ms(100 - engineSpeed1);
 
         // Motor 2 | Motor 2
         output_high(PIN_B4);
-        delay_ms(speedMotor2);
+        delay_ms(engineSpeed2);
         output_low(PIN_B4);
-        delay_ms(100 - speedMotor2);
+        delay_ms(100 - engineSpeed2);
 
         // Imprimir en la pantalla | print on the screen
         lcd_gotoxy(1, 1);
